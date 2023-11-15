@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="xhtd_synchronize_customer:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/xhtd_synchronize_customer_jar</output-path>
+    <root id="archive" name="xhtd_synchronize_customer.jar">
+      <element id="module-output" name="xhtd_synchronize_customer" />
+      <element id="library" level="module" name="ojdbc11.jar" module-name="xhtd_synchronize_customer" />
+    </root>
+  </artifact>
+</component>
