@@ -57,6 +57,91 @@ public class JDBCIdempiereConnect {
 		}
 		return customers;
 	}
+	
+	public static List<CustomerIdempiere> getCustomerProfileFromTDAB(List<String> dsKH) {
+		Connection conn = null;
+		PreparedStatement stm = null;
+		CustomerIdempiere cus;
+		List<CustomerIdempiere> customers = new ArrayList<>();
+		try {
+			System.out.println("getCustomerProfileFromT24 START.....");
+			StringBuffer param = new StringBuffer();
+			for (String str : dsKH) {
+				param.append(str).append("','");
+			}
+	        String parameter = "('".concat(param.toString()).concat("')");
+			String sql = "SELECT * FROM TDAB_CUS_T24 where value in " + parameter;
+			 
+			conn = DriverManager.getConnection(DB_IDEMPIERE_URL, DB_IDEMPIERE_USERNAME, DB_IDEMPIERE_PASSWORD);
+			
+			stm = conn.prepareStatement(sql);
+			stm.setQueryTimeout(2000);
+			
+			ResultSet rs = stm.executeQuery();
+			while ( rs.next() ) {
+				cus = new CustomerIdempiere();
+				cus.setVALUE(rs.getString("VALUE"));
+				cus.setTAXCODE(rs.getString("TAXCODE"));
+				cus.setNUMBERBUSINESS(rs.getString("NUMBER_BUSINESS"));
+				cus.setNAME(rs.getString("NAME"));
+				cus.setCOMPANYNAME(rs.getString("COMPANYNAME"));
+
+				
+				customers.add(cus);
+            }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				stm.close();
+				conn.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return customers;
+	}
+	public static List<CustomerIdempiere> getCustomerProfileFromTDAB1(String dsKH) {
+		Connection conn = null;
+		PreparedStatement stm = null;
+		CustomerIdempiere cus;
+		List<CustomerIdempiere> customers = new ArrayList<>();
+		try {
+//			System.out.println("getCustomerProfileFromT24 START.....");
+			StringBuffer param = new StringBuffer();
+			String parameter = "('".concat(param.toString()).concat("')");
+			String sql = "SELECT * FROM TDAB_CUS_T24 where value in " + parameter;
+			 
+			conn = DriverManager.getConnection(DB_IDEMPIERE_URL, DB_IDEMPIERE_USERNAME, DB_IDEMPIERE_PASSWORD);
+			
+			stm = conn.prepareStatement(sql);
+			stm.setQueryTimeout(2000);
+			
+			ResultSet rs = stm.executeQuery();
+			while ( rs.next() ) {
+				cus = new CustomerIdempiere();
+				cus.setVALUE(rs.getString("VALUE"));
+				cus.setTAXCODE(rs.getString("TAXCODE"));
+				cus.setNUMBERBUSINESS(rs.getString("NUMBER_BUSINESS"));
+				cus.setNAME(rs.getString("NAME"));
+				cus.setCOMPANYNAME(rs.getString("COMPANYNAME"));
+
+				
+				customers.add(cus);
+            }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				stm.close();
+				conn.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return customers;
+	}
+	
 	public static List<CustomerIdempiere> getTDABCusT24(String param) {
 		Connection conn = null;
 		PreparedStatement stm = null;
@@ -97,29 +182,20 @@ public class JDBCIdempiereConnect {
 
 	public static void updateTDABCUSTOMER(List<CustomerIdempiere> customers) {
 		Connection conn = null;
-		Statement stm = null;
 		PreparedStatement preparedStatement = null;
 		String sql;
 		try {
 			System.out.println("updateTDABCUSTOMER START.....");
 			conn = DriverManager.getConnection(DB_IDEMPIERE_URL, DB_IDEMPIERE_USERNAME, DB_IDEMPIERE_PASSWORD);
-//			stm = conn.createStatement();
-//			stm.setQueryTimeout(10000);
-			
 			conn.setAutoCommit(false);
-System.out.println("customers update"+customers.size());
 
 			for (CustomerIdempiere customerIdempiere : customers) {
-//				System.out.println(customerIdempiere.getTAXCODE()+ "-"+customerIdempiere.getVALUE());
 				sql = generateSqlUpdateTDABCustomer(customerIdempiere);
 				if (null != sql) {
-					//stm.addBatch(sql);
-//					System.out.println("sql--"+sql);
 				preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.executeUpdate();
 				}
 			}
-//			stm.executeBatch();
 			conn.commit();
 			System.out.println("updateTDABCUSTOMER END....!");
 		} catch (Exception e) {
@@ -138,17 +214,22 @@ System.out.println("customers update"+customers.size());
 	
 	}
 	
-	public static void updateTDABCUST24(CustomerIdempiere customers) {
+	public static void updateTDABCUST24(List<CustomerIdempiere> customers) {
 		Connection conn = null;
 		PreparedStatement preparedStatement = null;
-		String sql;
-		
+		String sql = null;
+		Statement stm = null;
 		
 			try {
 				conn = DriverManager.getConnection(DB_IDEMPIERE_URL, DB_IDEMPIERE_USERNAME, DB_IDEMPIERE_PASSWORD);	
 				conn.setAutoCommit(false);
-
-				sql = generateSqlUpdateTDABCusT24(customers);
+				
+				for (CustomerIdempiere customerIdempiere : customers) {
+					sql = generateSqlUpdateTDABCusT24(customerIdempiere);
+					if (null != sql)
+						stm.addBatch(sql);
+				}
+				
 				preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.executeUpdate();
 //				stm.executeBatch();
@@ -168,17 +249,21 @@ System.out.println("customers update"+customers.size());
 		
 	
 	}
-	public static void insertTDABCUST24(CustomerIdempiere customers) {
+	public static void insertTDABCUST24(List<CustomerIdempiere> customers) {
 		Connection conn = null;
-
+		Statement stm = null;
 		PreparedStatement preparedStatement = null;
-		String sql;
+		String sql = null;
 
 			try {
 				conn = DriverManager.getConnection(DB_IDEMPIERE_URL, DB_IDEMPIERE_USERNAME, DB_IDEMPIERE_PASSWORD);	
 				conn.setAutoCommit(false);
 
-				sql = generateSqlInsertTDABCustomer(customers);
+				for (CustomerIdempiere customerIdempiere : customers) {
+					sql = generateSqlInsertTDABCustomer(customerIdempiere);
+					if (null != sql)
+						stm.addBatch(sql);
+				}
 				preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.executeUpdate();
 //				stm.executeBatch();
@@ -235,6 +320,7 @@ System.out.println("customers update"+customers.size());
 		sql.append("CHECK_T24 = 'Y' WHERE TAXCODE = '").append(cus.getTAXCODE()).append("'");
 		return sql.toString();
 	}
+	
 	
 	private static String generateSqlInsertTDABCustomer(CustomerIdempiere cus) {
 		StringBuffer sql = new StringBuffer("INSERT INTO TDAB_CUS_T24 (VALUE, COMPANYNAME, NAME, TAXCODE ,number_business, CHECK_T24) values ( ");
