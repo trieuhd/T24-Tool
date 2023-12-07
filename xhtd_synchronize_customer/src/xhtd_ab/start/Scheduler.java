@@ -13,7 +13,7 @@ public class Scheduler {
 //           Calendar.DAY_OF_WEEK,
 //           Calendar.MONDAY
 //        );
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        calendar.set(Calendar.HOUR_OF_DAY, 07);
         calendar.set(Calendar.MINUTE, 50);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);

@@ -13,7 +13,8 @@ public class ServiceSchedule extends TimerTask{
 	public void run() {
 		System.out.println("SCHEDULE START AT : "+new Date(System.currentTimeMillis()));
 		ConfigDB.loadConfig();
-		SynchronizeService.doSynchronize();
+//		SynchronizeService.doSynchronize();
+		SynchronizeServiceT24.doSynchronize();
 //		RestartIdempiereService.restart();
 		System.out.println("SCHEDULE END AT : "+new Date(System.currentTimeMillis()));
 	}

@@ -79,4 +79,57 @@ public class JDBCT24Connect {
         sql = sql.concat(parameter).concat(" ) where row_num = 1");
         return sql;
 	}
+	private static String generateAllSql() {
+        String sql = "SELECT * FROM ofsaatm.abb_sme_cust_for_scoring_v";
+        return sql;
+	}
+	public static List<CustomerProfile> getAllCusFromT24() {
+		Connection conn = null;
+		PreparedStatement stm = null;
+		CustomerProfile cusProfile;
+		List<CustomerProfile> cusProfiles = new ArrayList<>();
+		try {
+			String sql = generateAllSql();
+			conn = DriverManager.getConnection(DB_T24_URL,DB_T24_USERNAME,DB_T24_PASSWORD);
+			stm = conn.prepareStatement(sql);
+			stm.setQueryTimeout(2000);
+			
+			ResultSet rs = stm.executeQuery();
+			while ( rs.next() ) {
+				cusProfile = new CustomerProfile();
+				cusProfile.setMA_SO_THUE(rs.getString("MA_SO_THUE"));
+				cusProfile.setMA_KH(rs.getString("MA_KH"));
+				cusProfile.setTEN_KH(rs.getString("TEN_KH"));
+				cusProfile.setTEN_NGUOI_DAI_DIEN(rs.getString("TEN_NGUOI_DAI_DIEN"));
+				cusProfile.setCHUC_DANH_NGUOI_DAI_DIEN(rs.getString("CHUC_DANH_NGUOI_DAI_DIEN"));
+				cusProfile.setGIAY_PHEP_KINH_DOANH(rs.getString("GIAY_PHEP_KINH_DOANH"));
+				cusProfile.setNAT_ID_TYPE(rs.getString("NAT_ID_TYPE"));
+				cusProfile.setPKKH(rs.getString("PKKH"));
+//				cusProfile.setD_D_CUST_DATE_OF_BIRTH(rs.getString("D_D_CUST_DATE_OF_BIRTH"));
+//				cusProfile.setD_D_CUST_START_DATE(rs.getString("D_D_CUST_START_DATE"));
+//				cusProfile.setLAST_INFO_CHANGE_DATE(rs.getString("LAST_INFO_CHANGE_DATE"));
+				cusProfile.setCOT_DUTRU_01(rs.getString("COT_DUTRU_01"));
+				cusProfile.setCOT_DUTRU_02(rs.getString("COT_DUTRU_01"));
+				cusProfile.setCOT_DUTRU_03(rs.getString("COT_DUTRU_01"));
+				cusProfile.setCOT_DUTRU_04(rs.getString("COT_DUTRU_01"));
+				cusProfile.setCOT_DUTRU_05(rs.getString("COT_DUTRU_01"));
+//				cusProfile.setD_GET_DATE(rs.getString("D_GET_DATE"));
+				
+				cusProfiles.add(cusProfile);
+            }
+			System.out.println("getAllCusFromT24 END.....");
+		} catch (SQLException e) {
+			System.err.println("getAllCusFromT24 UPDATE ERROR : ");
+			e.printStackTrace();
+		}finally {
+			try {
+				stm.close();
+				conn.close();
+			} catch (Exception e2) {
+				System.err.println("getCustomerProfileFromT24 CLOSE CONNECTION : ");
+				e2.printStackTrace();
+			}
+		}
+		return cusProfiles;
+	}
 }
