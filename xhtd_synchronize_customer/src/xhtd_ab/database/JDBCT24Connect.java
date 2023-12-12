@@ -79,8 +79,6 @@ public class JDBCT24Connect {
         sql = sql.concat(parameter).concat(" ) where row_num = 1");
         return sql;
 	}
-	
-	
 	private static String generateAllSql() {
         String sql = "SELECT * FROM ofsaatm.abb_sme_cust_for_scoring_v";
         return sql;
