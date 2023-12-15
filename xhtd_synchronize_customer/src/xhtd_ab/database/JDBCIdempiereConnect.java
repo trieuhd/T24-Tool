@@ -70,7 +70,7 @@ public class JDBCIdempiereConnect {
 //			stm.setQueryTimeout(10000);
 			
 			conn.setAutoCommit(false);
-System.out.println("customers update"+customers.size());
+			System.out.println("customers update"+customers.size());
 
 			for (CustomerIdempiere customerIdempiere : customers) {
 //				System.out.println(customerIdempiere.getTAXCODE()+ "-"+customerIdempiere.getVALUE());
